@@ -1,0 +1,27 @@
+{
+  "name": "site-visitas-fabrica",
+  "version": "1.0.0",
+  "description": "Site de Visitas para Fábrica de Software",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willian-hm/site-visitas-fabrica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willian-hm/site-visitas-fabrica/issues"
+  },
+  "homepage": "https://github.com/willian-hm/site-visitas-fabrica#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
