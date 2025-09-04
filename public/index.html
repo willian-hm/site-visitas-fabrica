@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulário Node.js</title>
+  <title>Registrar Visita</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Cadastro</h1>
+  <h1>Registro de Visitas</h1>
+
   <form action="/enviar" method="POST">
     <label for="nome">Nome:</label>
     <input type="text" id="nome" name="nome" required>
@@ -15,7 +16,15 @@
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" required>
 
-    <button type="submit">Enviar</button>
+    <label for="empresa">Empresa:</label>
+    <input type="text" id="empresa" name="empresa">
+
+    <label for="motivo">Motivo da visita:</label>
+    <textarea id="motivo" name="motivo" required></textarea>
+
+    <button type="submit">Registrar</button>
   </form>
+
+  <p><a href="/visitas">📋 Ver visitas registradas</a></p>
 </body>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Visitas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Visitas Registradas</h1>
+
+  <table id="tabela-visitas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Empresa</th>
+        <th>Motivo</th>
+        <th>Data Entrada</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- preenchido via JS -->
+    </tbody>
+  </table>
+
+  <p><a href="/">⬅ Voltar ao cadastro</a></p>
+
+  <script>
+    async function carregarVisitas() {
+      try {
+        const res = await fetch("/api/visitas");
+        const visitas = await res.json();
+        const tbody = document.querySelector("#tabela-visitas tbody");
+
+        tbody.innerHTML = ""; // limpa antes de preencher
+        visitas.forEach(v => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${v.idvisita}</td>
+            <td>${v.nome}</td>
+            <td>${v.email}</td>
+            <td>${v.empresa ?? "-"}</td>
+            <td>${v.motivo}</td>
+            <td>${new Date(v.dataentrada).toLocaleString("pt-BR")}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Erro ao carregar visitas:", err);
+      }
+    }
+
+    carregarVisitas();
+  </script>
+</body>
+</html>

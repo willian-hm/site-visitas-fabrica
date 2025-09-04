@@ -1,37 +1,52 @@
 const express = require("express");
 const path = require("path");
+const pool = require("./db");
+
 const app = express();
 const port = 3000;
 
-// Middleware para ler dados do formulário
 app.use(express.urlencoded({ extended: true }));
-
-// Servir arquivos estáticos (css, imagens, js)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rota principal -> mostra o form
+// Página inicial com formulário
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Rota POST -> recebe dados do form
-app.post("/enviar", (req, res) => {
-  const { nome, email } = req.body;
-  // Exemplo: salvar em banco, enviar email, etc.
-  res.send(`
-    <h1>Formulário recebido!</h1>
-    <p>Nome: ${nome}</p>
-    <p>Email: ${email}</p>
-    <a href="/">Voltar</a>
-  `);
+// Salvar visita no banco
+app.post("/enviar", async (req, res) => {
+  try {
+    const { nome, email, motivo, empresa } = req.body;
+    const result = await pool.query(
+      "INSERT INTO visita (nome, email, motivo, empresa, dataentrada) VALUES ($1, $2, $3, $4, NOW()) RETURNING idvisita",
+      [nome, email, motivo, empresa]
+    );
+
+    res.send(`<h1>Visita registrada com sucesso!</h1>
+              <p>ID: ${result.rows[0].idvisita}</p>
+              <a href="/">Voltar</a>`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao salvar visita.");
+  }
 });
 
-// Exemplo de rota que carrega um HTML específico
-app.get("/sucesso", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "sucesso.html"));
+// Página HTML de visitas
+app.get("/visitas", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "visitas.html"));
 });
 
-// Inicia o servidor
+// API de visitas (JSON)
+app.get("/api/visitas", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM visita ORDER BY dataentrada DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao buscar visitas.");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
 });
