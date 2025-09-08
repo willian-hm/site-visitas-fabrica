@@ -7,25 +7,41 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Visitas Registradas</h1>
+  <nav>
+    <span>Registro de Visitas</span>
+    <div>
+      <a href="/">Cadastro</a>
+      <a href="/visitas">Consultas</a>
+    </div>
+  </nav>
 
-  <table id="tabela-visitas">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Empresa</th>
-        <th>Motivo</th>
-        <th>Data Entrada</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- preenchido via JS -->
-    </tbody>
-  </table>
+  <main>
+    <h1>Visitas Registradas</h1>
 
-  <p><a href="/">⬅ Voltar ao cadastro</a></p>
+    <table id="tabela-visitas">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Foto</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Empresa</th>
+          <th>Motivo</th>
+          <th>Data Entrada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- preenchido via JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <footer>
+    <a href="https://instagram.com/yng_willian" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+      desenvolvido por @yng_willian
+    </a>
+  </footer>
 
   <script>
     async function carregarVisitas() {
@@ -34,11 +50,12 @@
         const visitas = await res.json();
         const tbody = document.querySelector("#tabela-visitas tbody");
 
-        tbody.innerHTML = ""; // limpa antes de preencher
+        tbody.innerHTML = "";
         visitas.forEach(v => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${v.idvisita}</td>
+            <td><img src="/uploads/${v.foto}" width="80" style="border-radius:50%;" alt="Foto"></td>
             <td>${v.nome}</td>
             <td>${v.email}</td>
             <td>${v.empresa ?? "-"}</td>
