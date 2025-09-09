@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lista de Visitas</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <nav>
     <span><b>Registro de Visitas da Fábrica de Software</b></span>
@@ -16,6 +18,18 @@
   </nav>
 
   <main>
+    <div class="filtros-container">
+      <label for="input-nome">
+        Buscar por nome:
+        <input type="text" id="input-nome" placeholder="Digite o nome..." />
+      </label>
+
+      <label for="input-data">
+        Buscar por data:
+        <input type="date" id="input-data" />
+      </label>
+    </div>
+
     <table id="tabela-visitas">
       <thead>
         <tr>
@@ -35,37 +49,66 @@
 
   <footer>
     <a href="https://instagram.com/yng_willian" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="20" height="20"
+        style="vertical-align: middle;" />
       desenvolvido por @yng_willian
     </a>
   </footer>
 
   <script>
+    let todasVisitas = [];
+
     async function carregarVisitas() {
       try {
         const res = await fetch("/api/visitas");
-        const visitas = await res.json();
-        const tbody = document.querySelector("#tabela-visitas tbody");
-
-        tbody.innerHTML = "";
-        visitas.forEach(v => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><img src="/uploads/${v.foto}" width="100" height="92" style="border-radius:50%;" alt="Foto"></td>
-            <td>${v.nome}</td>
-            <td>${v.email}</td>
-            <td>${v.empresa ?? "-"}</td>
-            <td>${v.motivo}</td>
-            <td>${new Date(v.dataentrada).toLocaleString("pt-BR")}</td>
-          `;
-          tbody.appendChild(tr);
-        });
+        todasVisitas = await res.json();
+        mostrarVisitas(todasVisitas);
       } catch (err) {
         console.error("Erro ao carregar visitas:", err);
       }
     }
 
+    function mostrarVisitas(visitas) {
+      const tbody = document.querySelector("#tabela-visitas tbody");
+      tbody.innerHTML = "";
+      visitas.forEach((v) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><img src="/uploads/${v.foto}" width="100" height="92" style="border-radius:50%;" alt="Foto"></td>
+          <td>${v.nome}</td>
+          <td>${v.email}</td>
+          <td>${v.empresa ?? "-"}</td>
+          <td>${v.motivo}</td>
+          <td>${new Date(v.dataentrada).toLocaleString("pt-BR")}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrarVisitas() {
+      const filtroNome = document.querySelector("#input-nome").value.toLowerCase();
+      const filtroData = document.querySelector("#input-data").value; // yyyy-mm-dd
+
+      const visitasFiltradas = todasVisitas.filter((v) => {
+        const nomeMatch = v.nome.toLowerCase().includes(filtroNome);
+
+        let dataMatch = true;
+        if (filtroData) {
+          const dataEntrada = new Date(v.dataentrada).toISOString().slice(0, 10);
+          dataMatch = dataEntrada === filtroData;
+        }
+
+        return nomeMatch && dataMatch;
+      });
+
+      mostrarVisitas(visitasFiltradas);
+    }
+
+    document.querySelector("#input-nome").addEventListener("input", filtrarVisitas);
+    document.querySelector("#input-data").addEventListener("change", filtrarVisitas);
+
     carregarVisitas();
   </script>
 </body>
+
 </html>

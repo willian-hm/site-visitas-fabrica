@@ -59,7 +59,7 @@ app.post("/enviar", async (req, res) => {
 
     const dist = calcularDistancia(parseFloat(lat), parseFloat(lng), targetLat, targetLng);
 
-    if (dist > 100) {
+    if (dist > 600) {
       return res.status(403).send("Fora do raio permitido (100m). Registro bloqueado.");
     }
 
@@ -76,9 +76,8 @@ app.post("/enviar", async (req, res) => {
       [nome, email, motivo, empresa, imageName]
     );
 
-    res.send(`<h1>Visita registrada com sucesso!</h1>
-              <p>ID: ${result.rows[0].idvisita}</p>
-              <a href="/">Voltar</a>`);
+     // Redireciona para a página de sucesso
+     res.sendFile(path.join(__dirname, "views", "sucesso.html"));
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro ao salvar visita.");
