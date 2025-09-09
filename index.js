@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
@@ -50,8 +51,8 @@ app.post("/enviar", async (req, res) => {
     const { nome, email, motivo, empresa, fotoBase64, lat, lng } = req.body;
 
     // Coordenadas fixas do local permitido
-    const targetLat = -27.026306; // 27°01'34.7"S
-    const targetLng = -51.144444; // 51°08'40.0"W
+    const targetLat = process.env.LAT;
+    const targetLng = process.env.LON;
 
     if (!lat || !lng) {
       return res.status(400).send("Localização não enviada.");

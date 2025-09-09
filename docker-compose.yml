@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    container_name: fabrica-visitas-app
+    restart: always
+    env_file:
+      - .env
+    # volumes:
+    #  - './public/style.css:/app/public/style.css:ro'
+    ports:
+      - "3000:3000" # ajuste se sua app usa outra porta
+    depends_on:
+      - db
+    networks:
+      - fabrica-visitas-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: fabrica-visitas-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_DB}
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./utils/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - fabrica-visitas-network
+
+volumes:
+  pgdata:
+
+networks:
+  fabrica-visitas-network:
+    driver: bridge
