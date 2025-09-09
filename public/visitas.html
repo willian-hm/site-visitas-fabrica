@@ -8,20 +8,17 @@
 </head>
 <body>
   <nav>
-    <span>Registro de Visitas</span>
+    <span><b>Registro de Visitas da Fábrica de Software</b></span>
     <div>
       <a href="/">Cadastro</a>
-      <a href="/visitas">Consultas</a>
+      <a href="/visitas">Visitas</a>
     </div>
   </nav>
 
   <main>
-    <h1>Visitas Registradas</h1>
-
     <table id="tabela-visitas">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Foto</th>
           <th>Nome</th>
           <th>Email</th>
@@ -54,8 +51,7 @@
         visitas.forEach(v => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${v.idvisita}</td>
-            <td><img src="/uploads/${v.foto}" width="80" style="border-radius:50%;" alt="Foto"></td>
+            <td><img src="/uploads/${v.foto}" width="100" height="92" style="border-radius:50%;" alt="Foto"></td>
             <td>${v.nome}</td>
             <td>${v.email}</td>
             <td>${v.empresa ?? "-"}</td>

@@ -17,6 +17,28 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
+// Funções de geolocalização (Haversine)
+function toRad(value) {
+  return (value * Math.PI) / 180;
+}
+
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // raio da Terra em metros
+  const φ1 = toRad(lat1);
+  const φ2 = toRad(lat2);
+  const Δφ = toRad(lat2 - lat1);
+  const Δλ = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // distância em metros
+}
+
 // Página inicial
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
@@ -25,8 +47,23 @@ app.get("/", (req, res) => {
 // Salvar visita
 app.post("/enviar", async (req, res) => {
   try {
-    const { nome, email, motivo, empresa, fotoBase64 } = req.body;
+    const { nome, email, motivo, empresa, fotoBase64, lat, lng } = req.body;
 
+    // Coordenadas fixas do local permitido
+    const targetLat = -27.026306; // 27°01'34.7"S
+    const targetLng = -51.144444; // 51°08'40.0"W
+
+    if (!lat || !lng) {
+      return res.status(400).send("Localização não enviada.");
+    }
+
+    const dist = calcularDistancia(parseFloat(lat), parseFloat(lng), targetLat, targetLng);
+
+    if (dist > 100) {
+      return res.status(403).send("Fora do raio permitido (100m). Registro bloqueado.");
+    }
+
+    // Salvar foto
     let imageName = "default.png";
     if (fotoBase64 && fotoBase64.startsWith("data:image")) {
       const base64Data = fotoBase64.replace(/^data:image\/png;base64,/, "");

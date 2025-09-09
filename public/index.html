@@ -1,48 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registrar Visita</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav>
-    <span>Registro de Visitas</span>
+    <span><b>Registro de Visitas da Fábrica de Software</b></span>
     <div>
       <a href="/">Cadastro</a>
-      <a href="/visitas">Consultas</a>
+      <a href="/visitas">Visitas</a>
     </div>
   </nav>
 
   <main>
-    <h1>Registro de Visitas</h1>
-
-    <form action="/enviar" method="POST" enctype="multipart/form-data">
+    <form action="/enviar" method="POST">
       <div class="foto-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" 
-             alt="Foto padrão" 
-             class="foto-preview" 
-             id="fotoDefault">
-
-        <video id="camera" autoplay playsinline></video>
-        <canvas id="fotoCanvas" style="display:none;"></canvas>
-        <input type="hidden" id="fotoBase64" name="fotoBase64">
-
-        <button type="button" id="abrir-camera">📸 Usar câmera</button>
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Foto padrão" class="foto-preview" id="fotoPreview" />
+        <video id="camera" autoplay playsinline style="display:none"></video>
+        <canvas id="fotoCanvas" style="display:none"></canvas>
+        <input type="hidden" id="fotoBase64" name="fotoBase64" />
+        <button type="button" id="btn-foto">📸 Usar câmera</button>
       </div>
 
       <label for="nome">Nome:</label>
-      <input type="text" id="nome" name="nome" required>
+      <input type="text" id="nome" name="nome" required />
 
       <label for="email">E-mail:</label>
-      <input type="email" id="email" name="email" required>
+      <input type="email" id="email" name="email" required />
 
       <label for="empresa">Empresa:</label>
-      <input type="text" id="empresa" name="empresa">
+      <input type="text" id="empresa" name="empresa" />
 
       <label for="motivo">Motivo da visita:</label>
       <textarea id="motivo" name="motivo" required></textarea>
+
+      <input type="hidden" id="lat" name="lat" />
+      <input type="hidden" id="lng" name="lng" />
 
       <button type="submit">Registrar</button>
     </form>
@@ -50,36 +46,75 @@
 
   <footer>
     <a href="https://instagram.com/yng_willian" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
       desenvolvido por @yng_willian
     </a>
   </footer>
 
   <script>
-    const abrirCameraBtn = document.getElementById("abrir-camera");
+    const btnFoto = document.getElementById("btn-foto");
     const video = document.getElementById("camera");
     const canvas = document.getElementById("fotoCanvas");
+    const fotoPreview = document.getElementById("fotoPreview");
     const fotoBase64 = document.getElementById("fotoBase64");
-    const fotoDefault = document.getElementById("fotoDefault");
 
-    abrirCameraBtn.addEventListener("click", async () => {
+    let stream = null;
+    let tirouFoto = false;
+
+    async function iniciarCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
         video.style.display = "block";
-        fotoDefault.style.display = "none"; // esconde imagem padrão
-
-        // captura no submit
-        document.querySelector("form").addEventListener("submit", () => {
-          const ctx = canvas.getContext("2d");
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          fotoBase64.value = canvas.toDataURL("image/png");
-        });
+        fotoPreview.style.display = "none";
+        btnFoto.textContent = "📸 Tirar foto";
+        tirouFoto = false;
       } catch (err) {
         alert("Câmera não permitida. Usando foto padrão.");
       }
+    }
+
+    function tirarFoto() {
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      fotoBase64.value = canvas.toDataURL("image/png");
+      fotoPreview.src = fotoBase64.value;
+      fotoPreview.style.display = "block";
+      video.style.display = "none";
+
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      btnFoto.textContent = "🔄 Tirar de novo";
+      tirouFoto = true;
+    }
+
+    btnFoto.addEventListener("click", () => {
+      if (!tirouFoto) {
+        if (stream) tirarFoto();
+        else iniciarCamera();
+      } else {
+        iniciarCamera();
+      }
+    });
+
+    // Captura geolocalização antes de enviar o form
+    document.querySelector("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.getElementById("lat").value = pos.coords.latitude;
+          document.getElementById("lng").value = pos.coords.longitude;
+          e.target.submit();
+        },
+        () => {
+          alert("Localização não permitida. Não é possível registrar.");
+        }
+      );
     });
   </script>
 </body>

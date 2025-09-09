@@ -67,7 +67,7 @@ form {
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -97,7 +97,7 @@ form {
 }
 
 /* Botão tirar foto */
-#abrir-camera {
+#btn-foto{
   background-color: var(--verde);
   color: white;
   padding: 8px 15px;
@@ -108,7 +108,7 @@ form {
   transition: opacity 0.3s;
 }
 
-#abrir-camera:hover {
+#btn-foto:hover {
   opacity: 0.8;
 }
 
@@ -148,7 +148,7 @@ form button[type="submit"]:hover {
 table {
   border-collapse: collapse;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -156,7 +156,7 @@ table {
 }
 
 th, td {
-  padding: 12px 15px;
+  padding: 12px 30px;
   text-align: left;
   border-bottom: 1px solid var(--secundaria);
 }
