@@ -8,7 +8,7 @@ services:
     # volumes:
     #  - './public/style.css:/app/public/style.css:ro'
     ports:
-      - "3000:3000" # ajuste se sua app usa outra porta
+      - "${PORT}:${PORT}"
     depends_on:
       - db
     networks:
