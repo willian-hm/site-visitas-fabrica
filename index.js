@@ -85,7 +85,7 @@ app.post("/enviar", async (req, res) => {
   }
 });
 
-const TOKEN = process.env.ACCESS_TOKEN || 'ifcvideira';
+const TOKEN = process.env.ACCESS_TOKEN;
 
 // middleware
 const tokenAuth = (req, res, next) => {
