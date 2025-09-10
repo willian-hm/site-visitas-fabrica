@@ -51,8 +51,8 @@ app.post("/enviar", async (req, res) => {
     const { nome, email, motivo, empresa, fotoBase64, lat, lng } = req.body;
 
     // Coordenadas fixas do local permitido
-    const targetLat = process.env.LAT;
-    const targetLng = process.env.LON;
+    const targetLat = parseFloat(process.env.LAT);
+    const targetLng = parseFloat(process.env.LON);
 
     if (!lat || !lng) {
       return res.status(400).send("Localização não enviada.");
@@ -72,13 +72,13 @@ app.post("/enviar", async (req, res) => {
       fs.writeFileSync(path.join(uploadDir, imageName), base64Data, "base64");
     }
 
-    const result = await pool.query(
-      "INSERT INTO visita (nome, email, motivo, empresa, dataentrada, foto) VALUES ($1, $2, $3, $4, NOW(), $5) RETURNING idvisita",
+    await pool.query(
+      "INSERT INTO visita (nome, email, motivo, empresa, dataentrada, foto) VALUES ($1, $2, $3, $4, NOW(), $5)",
       [nome, email, motivo, empresa, imageName]
     );
 
-     // Redireciona para a página de sucesso
-     res.sendFile(path.join(__dirname, "views", "sucesso.html"));
+    // Redireciona para a página de sucesso
+    res.sendFile(path.join(__dirname, "views", "sucesso.html"));
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro ao salvar visita.");
@@ -90,7 +90,6 @@ const TOKEN = process.env.ACCESS_TOKEN;
 // middleware
 const tokenAuth = (req, res, next) => {
   const token = req.query.token || req.headers['x-access-token'];
-
   if (token === TOKEN) {
     next();
   } else {
@@ -98,15 +97,28 @@ const tokenAuth = (req, res, next) => {
   }
 };
 
-// Página de visitas
-app.get("/visitas", tokenAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "visitas.html"));
-});
-
-app.get("/api/visitas", tokenAuth, async (req, res) => {
+// Página de visitas (com dados já carregados)
+app.get("/visitas", tokenAuth, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM visita ORDER BY dataentrada DESC");
-    res.json(result.rows);
+
+    // Monta as linhas da tabela
+    const linhas = result.rows.map(v => `
+      <tr>
+        <td><img src="/uploads/${v.foto}" width="100" height="92" style="border-radius:50%;" alt="Foto"></td>
+        <td>${v.nome}</td>
+        <td>${v.email}</td>
+        <td>${v.empresa ?? "-"}</td>
+        <td>${v.motivo}</td>
+        <td>${new Date(v.dataentrada).toLocaleString("pt-BR")}</td>
+      </tr>
+    `).join("");
+
+    // Carrega o template visitas.html e injeta as linhas
+    let html = fs.readFileSync(path.join(__dirname, "public", "visitas.html"), "utf-8");
+    html = html.replace("<!-- preenchido via JS -->", linhas);
+
+    res.send(html);
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro ao buscar visitas.");

@@ -11,6 +11,10 @@
 <body>
   <nav>
     <span><b>Registro de Visitas da Fábrica de Software</b></span>
+    <div>
+      <a href="/">Cadastro</a>
+      <a href="/visitas">Visitas</a>
+    </div>
   </nav>
 
   <main>
@@ -52,58 +56,43 @@
   </footer>
 
   <script>
+    // carrega as visitas que já estão renderizadas no HTML
     let todasVisitas = [];
-
-    async function carregarVisitas() {
-      try {
-        const res = await fetch("/api/visitas");
-        todasVisitas = await res.json();
-        mostrarVisitas(todasVisitas);
-      } catch (err) {
-        console.error("Erro ao carregar visitas:", err);
-      }
-    }
-
-    function mostrarVisitas(visitas) {
-      const tbody = document.querySelector("#tabela-visitas tbody");
-      tbody.innerHTML = "";
-      visitas.forEach((v) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><img src="/uploads/${v.foto}" width="100" height="92" style="border-radius:50%;" alt="Foto"></td>
-          <td>${v.nome}</td>
-          <td>${v.email}</td>
-          <td>${v.empresa ?? "-"}</td>
-          <td>${v.motivo}</td>
-          <td>${new Date(v.dataentrada).toLocaleString("pt-BR")}</td>
-        `;
-        tbody.appendChild(tr);
+    document.querySelectorAll("#tabela-visitas tbody tr").forEach(tr => {
+      todasVisitas.push({
+        nome: tr.children[1].innerText,
+        email: tr.children[2].innerText,
+        empresa: tr.children[3].innerText,
+        motivo: tr.children[4].innerText,
+        dataentrada: tr.children[5].innerText,
+        row: tr
       });
-    }
+    });
 
     function filtrarVisitas() {
       const filtroNome = document.querySelector("#input-nome").value.toLowerCase();
       const filtroData = document.querySelector("#input-data").value; // yyyy-mm-dd
 
-      const visitasFiltradas = todasVisitas.filter((v) => {
-        const nomeMatch = v.nome.toLowerCase().includes(filtroNome);
+      todasVisitas.forEach(v => {
+        let nomeMatch = v.nome.toLowerCase().includes(filtroNome);
 
         let dataMatch = true;
         if (filtroData) {
+          // pega só a parte yyyy-mm-dd
           const dataEntrada = new Date(v.dataentrada).toISOString().slice(0, 10);
           dataMatch = dataEntrada === filtroData;
         }
 
-        return nomeMatch && dataMatch;
+        if (nomeMatch && dataMatch) {
+          v.row.style.display = "";
+        } else {
+          v.row.style.display = "none";
+        }
       });
-
-      mostrarVisitas(visitasFiltradas);
     }
 
     document.querySelector("#input-nome").addEventListener("input", filtrarVisitas);
     document.querySelector("#input-data").addEventListener("change", filtrarVisitas);
-
-    carregarVisitas();
   </script>
 </body>
 
