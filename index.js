@@ -85,13 +85,25 @@ app.post("/enviar", async (req, res) => {
   }
 });
 
+const TOKEN = process.env.ACCESS_TOKEN || 'ifcvideira';
+
+// middleware
+const tokenAuth = (req, res, next) => {
+  const token = req.query.token || req.headers['x-access-token'];
+
+  if (token === TOKEN) {
+    next();
+  } else {
+    res.status(403).sendFile(path.join(__dirname, "public", "negado.html"))
+  }
+};
+
 // Página de visitas
-app.get("/visitas", (req, res) => {
+app.get("/visitas", tokenAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "visitas.html"));
 });
 
-// API de visitas
-app.get("/api/visitas", async (req, res) => {
+app.get("/api/visitas", tokenAuth, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM visita ORDER BY dataentrada DESC");
     res.json(result.rows);
