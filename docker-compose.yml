@@ -5,14 +5,15 @@ services:
     restart: always
     env_file:
       - .env
-    # volumes:
-    #  - './public/style.css:/app/public/style.css:ro'
+    volumes:
+      - './public:/app/public:ro'
+      - './uploads:/app/uploads'
     ports:
       - "${PORT}:${PORT}"
     depends_on:
       - db
     networks:
-      - fabrica-visitas-network
+      - fabrica-network
 
   db:
     image: postgres:15-alpine
@@ -28,11 +29,11 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./utils/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
-      - fabrica-visitas-network
+      - fabrica-network
 
 volumes:
   pgdata:
 
 networks:
-  fabrica-visitas-network:
-    driver: bridge
+  fabrica-network:
+    external: true

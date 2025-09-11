@@ -1,10 +1,18 @@
-/* Paleta de cores */
+/* ---------------- VARIÁVEIS ---------------- */
 :root {
-  --verde: #446640;
-  --primaria: #E4E4E4;
-  --secundaria: #BDBDBD;
+  --primary-color: #860083;
+  --primary-color-hover: #a300a0;
+  --secondary-color: white;
+  --secondary-text-color: var(--primary-color);
+  --secondary-hover-bg: var(--primary-color);
+  --secondary-hover-text: white;
+  --text-color: #333;
+  --background-color: #f8f9fa;
+  --header-shadow: rgba(0, 0, 0, 0.1);
+  --border-color: var(--primary-color);
 }
 
+/* ---------------- RESET ---------------- */
 * {
   margin: 0;
   padding: 0;
@@ -12,9 +20,14 @@
   font-family: Arial, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  font-size: 14px;
+}
+
 body {
-  background-color: var(--primaria);
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--text-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -22,16 +35,16 @@ body {
 
 /* ---------------- NAV ---------------- */
 nav {
-  background-color: var(--verde);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   padding: 15px 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
 nav a {
-  color: white;
+  color: var(--secondary-color);
   text-decoration: none;
   margin: 0 10px;
   font-weight: bold;
@@ -49,20 +62,20 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  /* padding: 30px; */
 }
 
 h1 {
-  margin-bottom: 20px;
-  color: var(--verde);
+  /* margin-bottom: 20px; */
+  color: var(--primary-color);
 }
 
 /* Formulário centralizado */
 form {
-  background: white;
+  background: var(--secondary-color);
   padding: 25px;
   border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px var(--header-shadow);
   width: 100%;
   max-width: 400px;
   display: flex;
@@ -71,46 +84,60 @@ form {
   align-items: center;
 }
 
-/* ---------------- FOTO / CÂMERA ---------------- */
-.foto-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+.form-logo {
+  display: block;
+  margin: 0 auto 10px; /* centralizado com margem inferior */
+  height: 40px;
+  width: auto;
+  /* Animação */
+  animation: floatLogo 3s ease-in-out infinite;
 }
 
-.foto-preview {
+/* ---------------- FOTO / CÂMERA ---------------- */
+.foto-container {
+  position: relative; /* para posicionar o botão */
+  display: inline-block;
+}
+
+.foto-preview,
+#camera {
   width: 150px;
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--verde);
+  border: 3px solid var(--primary-color);
 }
 
 #camera {
-  display: none;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--verde);
+  display: none; /* inicialmente oculto */
 }
 
-/* Botão tirar foto */
+/* Botão pequeno no canto inferior direito */
 #btn-foto {
-  background-color: var(--verde);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 6px;
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   border: none;
-  cursor: pointer;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 20px;
   font-weight: bold;
-  transition: opacity 0.3s;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 #btn-foto:hover {
-  opacity: 0.8;
+  background-color: var(--primary-color-hover);
 }
+
+
 
 /* ---------------- CAMPOS ---------------- */
 form label {
@@ -119,13 +146,13 @@ form label {
 }
 
 form input,
-form textarea,
-form button {
-  padding: 10px;
+form textarea {
+  padding: 12px;
   border-radius: 6px;
-  border: 1px solid var(--secundaria);
-  font-size: 14px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
   width: 100%;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 form textarea {
@@ -133,26 +160,42 @@ form textarea {
   min-height: 80px;
 }
 
+form input::placeholder,
+form textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Foco acessível */
+form input:focus,
+form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 6px rgba(134, 0, 131, 0.5);
+}
+
+/* Botão enviar */
 form button[type="submit"] {
-  background-color: var(--verde);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   border: none;
   cursor: pointer;
   font-weight: bold;
-  transition: opacity 0.3s;
+  padding: 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 form button[type="submit"]:hover {
-  opacity: 0.8;
+  background-color: var(--primary-color-hover);
 }
 
 /* ---------------- TABELA ---------------- */
-/* Container dos filtros */
 #input-nome,
 #input-data {
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
-  border: 1.5px solid #ccc;
+  border: 1.5px solid var(--border-color);
   border-radius: 6px;
   transition: border-color 0.3s ease;
   width: 220px;
@@ -160,23 +203,20 @@ form button[type="submit"]:hover {
   margin-left: 0.5rem;
 }
 
-/* Efeito foco */
 #input-nome:focus,
 #input-data:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 4px rgba(134, 0, 131, 0.5);
 }
 
-/* Label estilizado para alinhamento */
 label[for="input-nome"],
 label[for="input-data"] {
   font-weight: 600;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-color);
 }
 
-/* Container que envolve os inputs para alinhar lado a lado */
 .filtros-container {
   display: flex;
   flex-wrap: wrap;
@@ -189,32 +229,33 @@ table {
   border-collapse: collapse;
   width: 100%;
   max-width: 1200px;
-  background: white;
+  background: var(--secondary-color);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 8px var(--header-shadow);
 }
 
 th,
 td {
   padding: 12px 30px;
   text-align: left;
-  border-bottom: 1px solid var(--secundaria);
+  border-bottom: 1px solid var(--border-color);
 }
 
 th {
-  background-color: var(--verde);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 tr:hover {
-  background-color: var(--secundaria);
+  background-color: var(--secondary-hover-bg);
+  color: var(--secondary-hover-text);
 }
 
 /* ---------------- FOOTER ---------------- */
 footer {
-  background-color: var(--verde);
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   text-align: center;
   padding: 15px;
   display: flex;
@@ -224,7 +265,7 @@ footer {
 }
 
 footer a {
-  color: white;
+  color: var(--secondary-color);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -240,4 +281,70 @@ footer a:hover {
 footer img {
   width: 20px;
   height: 20px;
+}
+
+/* Política de Privacidade */
+/* Checkbox de consentimento */
+.consent {
+  display: flex;
+  align-items: center;   /* verticalmente centralizado */
+  font-size: 0.7rem;
+  margin: 5px 0;
+  gap: 8px;              /* espaço entre checkbox e texto */
+  font-weight: 100;
+}
+
+/* Checkbox */
+.consent input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;        /* não deixa o checkbox encolher */
+}
+
+/* Texto do consentimento ocupa o restante da linha */
+.consent span {
+  flex: 1;               /* ocupa todo espaço restante */
+  line-height: 1.4;
+}
+
+/* Links dentro do consentimento */
+.consent a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.consent a:hover {
+  color: var(--primary-color-hover);
+}
+
+/* Responsividade para mobile */
+@media (max-width: 480px) {
+  form {
+    padding: 20px;
+    width: 90%;
+  }
+
+  form input,
+  form textarea,
+  form button {
+    font-size: 0.8rem;
+    padding: 1rem;
+  }
+
+  #btn-foto {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Keyframes para movimento vertical leve */
+@keyframes floatLogo {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); } /* sobe 10px */
+  100% { transform: translateY(0px); }
 }

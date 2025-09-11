@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registrar Visita</title>
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <nav>
     <span><b>Registro de Visitas da Fábrica de Software</b></span>
   </nav>
 
   <main>
+    <img src="img/logo.svg" alt="Logotipo Fábrica de Software" class="form-logo" />
+
     <form action="/enviar" method="POST">
       <div class="foto-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Foto padrão" class="foto-preview" id="fotoPreview" />
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Foto padrão" class="foto-preview"
+          id="fotoPreview" />
         <video id="camera" autoplay playsinline style="display:none"></video>
         <canvas id="fotoCanvas" style="display:none"></canvas>
         <input type="hidden" id="fotoBase64" name="fotoBase64" />
-        <button type="button" id="btn-foto">📸 Usar câmera</button>
+
+        <button type="button" id="btn-foto" title="Usar câmera">+</button>
       </div>
 
-      <label for="nome">Nome:</label>
-      <input type="text" id="nome" name="nome" required />
 
-      <label for="email">E-mail:</label>
-      <input type="email" id="email" name="email" required />
 
-      <label for="empresa">Empresa:</label>
-      <input type="text" id="empresa" name="empresa" />
+      <label for="nome">Nome *</label>
+      <input type="text" id="nome" name="nome" required placeholder="Digite seu nome" autocomplete="name" autofocus />
 
-      <label for="motivo">Motivo da visita:</label>
-      <textarea id="motivo" name="motivo" required></textarea>
+      <label for="email">E-mail *</label>
+      <input type="email" id="email" name="email" required placeholder="exemplo@dominio.com" autocomplete="email" />
+
+      <label for="empresa">Empresa (opcional):</label>
+      <input type="text" id="empresa" name="empresa" placeholder="Nome da empresa" autocomplete="organization" />
+
+      <label for="motivo">Motivo da visita (opcional):</label>
+      <textarea id="motivo" name="motivo" placeholder="Descreva o motivo da visita"></textarea>
+
+      <!-- Checkbox de consentimento LGPD -->
+      <label class="consent">
+        <input type="checkbox" name="consentimento" required />
+        <span class="consent-text">
+          Concordo com a <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a> e autorizo o
+          uso dos meus dados para registro de visita.
+        </span>
+      </label>
+
 
       <input type="hidden" id="lat" name="lat" />
       <input type="hidden" id="lng" name="lng" />
@@ -39,6 +58,7 @@
       <button type="submit">Registrar</button>
     </form>
   </main>
+
 
   <footer>
     <a href="https://instagram.com/yng_willian" target="_blank">
@@ -63,7 +83,7 @@
         video.srcObject = stream;
         video.style.display = "block";
         fotoPreview.style.display = "none";
-        btnFoto.textContent = "📸 Tirar foto";
+        btnFoto.textContent = "📸";
         tirouFoto = false;
       } catch (err) {
         alert("Câmera não permitida. Usando foto padrão.");
@@ -85,7 +105,7 @@
         stream.getTracks().forEach(track => track.stop());
       }
 
-      btnFoto.textContent = "🔄 Tirar de novo";
+      btnFoto.textContent = "🔄";
       tirouFoto = true;
     }
 
@@ -114,4 +134,5 @@
     });
   </script>
 </body>
+
 </html>

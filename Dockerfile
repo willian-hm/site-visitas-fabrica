@@ -14,7 +14,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Expõe a porta (altere se necessário)
-EXPOSE 8080
+EXPOSE 3000
 
 # Comando para iniciar a aplicação
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
